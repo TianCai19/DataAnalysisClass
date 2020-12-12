@@ -1,0 +1,28 @@
+
+
+##课后习题3.7
+```{r}
+library(readr)
+date1_url <- "data/data1.csv"
+data1 <- read_csv(date1_url,
+                locale = locale(encoding = "UTF-8"))
+```
+```{r}
+stuInf=data.frame(data1)
+stuInf
+```
+
+
+```{r}
+attach(stuInf)
+plot(体重~身高)
+coplot(体重~身高|性别)
+coplot(体重~身高|年龄)
+coplot(年龄~体重|年龄+性别)
+```
+
+## 课后习题3.8
+```{r}
+cor.test(身高,体重)
+```
+### 结论：身高和体重是相关的。

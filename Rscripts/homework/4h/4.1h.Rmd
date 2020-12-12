@@ -1,0 +1,95 @@
+---
+title: "作业4"
+author: "朱广恩"
+date: "2020/11/2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r data ,echo=FALSE}
+data1 <- read.csv("data/6.2.csv", encoding = "UTF-8");
+attach(data1)
+```
+# 题目1
+## 1)求出Y关于X的多元线性回归方程;
+```{r}
+lm.sol<-lm(Y~X1+X2+X3)
+lm.sol$coefficients
+
+```
+#### 结果:$Y=43.65+1.785X_1-0.083X_2+0.161X_3$
+## 2）对方程作显著性检验
+```{r}
+summary(lm.sol)
+```
+#### x2,x3没有通过检验
+
+## 3)对变量做逐步回归
+```{r}
+lm.step1<-step(lm.sol)
+```
+
+####  **结论**:可以看出用全部变量做回归方程的时候，AIC的值为111.27.如果去掉X2,AIC的值达到最小,达到109.32
+
+```{r}
+summary(lm.step1)
+```
+#### 可以看出AIC最小时回归系数检验的显著性水平有所提高,但是$X_3$的显著性水平仍然不理想。继续进行逐步回归
+
+```{r}
+drop1(lm.step1)
+```
+#### *结论*可以看出，删除$X_3$以后AIC的增加很小,残差平方和上升也比较小,所以可以删除$X_3$
+```{r}
+lm.sol2<-lm(Y~X1)
+summary(lm.sol2)
+```
+#### **结论**:逐步回归后显著性检验水平有很大的提升。所以“最优”的回归方程为:$Y=59.259+1.8434X_1$
+
+
+
+# 题目2
+
+
+```{r data2,echo=FALSE}
+data2 <- read.csv("data/6.8.csv", encoding = "UTF-8");
+attach(data2)
+```
+## 1)logistic回归模型
+
+```{r}
+glm.sol<-glm(Y~X1+X2+X3+X4+X5,family=binomial,data=data2)
+summary(glm.sol)
+```
+#### **结论：**只有$X_1$显著,为主要影响因素,且满足显著性检验。
+
+## 病人生存时间大于等于200天的概率估计值
+
+```{r}
+ffy=predict(glm.sol,data2)
+p <- exp(ffy)/(1 + exp(ffy))
+cbind(p)
+```
+
+## 2) 逐步回归选取自变量
+
+```{r}
+glm.step1 <- step(glm.sol)
+
+```
+
+##### 仅仅保留$X_1,X_4$,AIC达到最小值。
+```{r}
+summary(glm.step1)
+```
+#### 此时检验水平有一定程度的提升
+
+```{r}
+yff2 <- predict(glm.step1, data2)
+p2 <- exp(yff2)/(1 + exp(yff2))
+cbind(p, p2)
+```
+##### **从上表可以看出，新的模型更好**

@@ -1,0 +1,88 @@
+---
+title: "作业1"
+author: "朱广恩"
+date: "2020/9/25"
+output: html_document
+---
+## 问题一
+用计算机生成n个样本$x_1,x_2...x_n，$它们独立同分布于Bernoulli（1/4),
+取样本容量$n=10，100，1000，10000，100000$，分别计算它们的均值和方差（结果可用表格呈现）。观察结果，你有什么发现?
+```{r include = FALSE}
+library("Rlab")
+```
+
+```{r}
+prob <- 1 / 4
+prob * (1 - prob)
+
+f1 <- function(i) {
+  a <- rbern(10^i, 1 / 4)
+  return(c(10^i, mean(a), (sd(a))^2))
+}
+
+n1 <- matrix(1:5)
+ans1 <- apply(n1, MARGIN = 1, f1)
+rownames(ans1) <- c("n", "mean", "sd")
+ans1
+```
+发现：随着样本的越来越大，样本平均值和方差与总体平均值和方差越来越接近。
+
+
+
+## 问题二
+通过随机模拟说明$\frac{\sqrt{n} (x-\mu )}{\sigma }$即$\frac{ (x-np )}{\sqrt{npq} }$与分布$N(0,1)$）的关系·
+
+1）随机生成n个样本$x_1,x_2...x_n$它们独立同分布于$Bernoulli(\frac{1}{4})$
+
+2）取样本量$n=10,100,1000,10000，100000，$分别画出样本的
+直方图和分布$N(0,1)$的密度数图〔如图1），观察结果，你有什么发现？
+```{r}
+
+ff <- function(x, n) {
+  ans <- (x - n * prob) / sqrt((n * prob * (1 - prob)))
+  return(ans)
+}
+```
+
+```{r}
+par(mfrow = c(2, 3))
+for (i in c(1:5)) {
+  n <- 10^i
+  m <- matrix(rbinom(n, n, prob))
+  m1 <- apply(m, 1, ff, n = n)
+  hist(m1, freq = F)
+  curve(dnorm(x), add = T)
+}
+```
+
+
+### 结论：大量随机变量近似服从正态分布
+
+## 问题三
+画出样本的正态QQ图，说出你的结论
+```{r}
+m <- rbinom(1000, 1000, prob)
+qqnorm(m)
+qqline(m)
+```
+
+### 结论： 大量随机变量近似服从正态分布
+
+## 问题四
+
+用计算机生成n个样本$x_1,x_2...x_n$它们独立同分布于$N(0,1)$，
+比较样本容量$n=10,100,1000,10000，100000，$时$\sqrt{n}$
+$\overline{x}$与$N(0,1)$的关系
+```{r}
+par(mfrow = c(2, 3))
+for (i in c(1:5)) {
+  n <- 10^i
+  m <- rnorm(n)
+  hist(m, freq = F)
+  curve(dnorm(x), add = T)
+  # print(mean(m) * sqrt(n))
+}
+qqnorm(m)
+qqline(m)
+```
+

@@ -1,0 +1,35 @@
+---
+title: '6.2'
+author: "数181王征"
+date: "2020/11/5"
+output: html_document
+---
+<font face="黑体" color=black size=6>   &ensp;&ensp;&ensp;&ensp;研究同一地区土壤元素所含可给态磷的情况（Y），得到了18组数据如图所示，表中的X<sub>1</sub>为土壤所含无机磷浓度，X<sub>2</sub>为土壤内溶于K<sub>2</sub>CO<sub>3</sub>溶液并受溴化物水解的有机磷，X<sub>3</sub>为土壤内溶于K<sub>2</sub>CO<sub>3</sub>溶液但不溶于溴化物水解的有机磷。</font>
+
+```{r}
+localones<-read.csv("data/6.2.csv")
+attach(localones)
+localones
+```
+<font face="黑体" color=black size=5>（1)求出Y关于X的多元线性回归方程；
+&nbsp;&nbsp;（2）对方方程作显著性检验</font>
+```{r}
+lm.sol<-lm(Y~1+X1+X2+X3,data=localones);summary(lm.sol)
+```
+&emsp; &emsp; <font face="黑体" color=red size=4>发现X<sub>2</sub>和X<sub>3</sub>的系数没有通过t检验。但是整个方程通过了检验。</font>
+
+
+<font face="黑体" color=black size=5>(3)对变量作逐步回归分析</font>
+```{r}
+lm.ste<-step(lm.sol)
+summary(lm.ste)
+```
+&emsp; &emsp; <font face="黑体" color=red size=4>发现新模型只含有X<sub>2</sub>和X<sub>3</sub>，但是X<sub>3</sub>的系数还是不显著</font>
+```{r}
+drop1(lm.ste)
+```
+&emsp; &emsp; <font face="黑体" color=red size=4>发现去掉X<sub>3</sub>残差升高最小，ALC只是少量增加。因此应该去掉X<sub>3</sub></font>
+```{r}
+lm.new<-lm(Y~X1,data = localones);summary(lm.new)
+```
+&emsp; &emsp; <font face="黑体" color=red size=4>此时新模型lm.new系数显著且方差显著</font>

@@ -1,0 +1,41 @@
+---
+title: "class4_homework"
+author: "朱广恩 数181班 189084174"
+date: "2020/9/25"
+output: html_document
+---
+```{r include = FALSE}
+library("Rlab");
+```
+
+## 问题一
+用计算机生成n个样本$x_1,x_2...x_n，$它们独立同分布于Bernoulli（1/4),
+取样本容量$n=10，100，1000，10000，100000$，分别计算它们的均值和方差（结果可用表格呈现）
+### 期望和方差
+```{r}
+prob=1/4;
+prob
+prob*(1-prob)
+```
+
+### 计算结果
+```{r}
+
+f1=function(i)
+{
+ 
+  a=rbern(10^i,1/4)
+  return(c(10^i,mean(a),(sd(a))^2))
+  
+}
+
+n1=matrix(1:5)
+ans1=apply(n1, MARGIN = 1, f1)
+rownames(ans1)<-c("n","mean","sd")
+ans1
+```
+```{R}
+data
+
+```
+##

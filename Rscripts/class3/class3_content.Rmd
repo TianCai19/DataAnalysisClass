@@ -1,0 +1,118 @@
+---
+title: "class_judege"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+A<-rnorm(1000,2,4)
+is.numeric(A)
+
+class(A)
+AA<-sample(A)
+A1<-A[1:10]
+A2<-A[c(12,3,45)]
+mean(A1)
+sd(A1)
+```
+```{r}
+##生成二维的
+B<-A[1:100]
+dim(B)<-c(10,10)
+##重新换元
+dim(B)<-NULL
+```
+## 矩阵matrix
+```{r}
+
+MA<-matrix(B,10,10)
+##整体的平均值
+mean(MA)
+## 每一行的平均值
+colMeans(MA)
+mean(colMeans(MA))
+
+##第二列的
+mean(MA[,2])
+colMeans(MA)[2]
+```
+
+```{r}
+MA[1,]
+mean(MA[1,])
+rowMeans(MA)[1]
+```
+## 列的均值的不同方法
+```{r}
+apply(MA,2,mean)
+colMeans(MA)
+
+```
+##apply ,特别是在自己写函数的时候非常方便。
+```{r}
+
+```
+### 提取数据("清洗"),逻辑索引
+```{r}
+C=rnorm(20,2,5)
+C
+C>4 #逻辑索引
+C[C>4]
+which(C>4)# 序号索引
+D=C
+D[which(D>4)]=0
+D
+
+```
+```{r}
+par(mfrow=c(2,3))
+plot(C)
+boxplot(C)
+hist(C)
+stripchart(C)
+barplot(C,col='blue')
+
+```
+```{r}
+x<-rnorm(1000)
+hist(x,freq=F)
+curve(dnorm(x),add=T)
+h<-hist(x,plot=F)
+ylim<-range(0,h$density,dnorm(0))
+#防止倒带不了最大值，手动修改range
+hist(x,freq=F,ylim=ylim)
+curve(dnorm(x),add=T,col="red")
+```
+## Control Flow
+###[Example of if…else statement](https://www.datamentor.io/r-programming/if-else-statement/)
+```{r}
+x <- -5
+if(x > 0){
+print("Non-negative number")
+} else {
+print("Negative number")
+}
+```
+### [Example: for loop](https://www.datamentor.io/r-programming/for-loop/)
+```{r}
+x <- c(2,5,3,9,8,11,6)
+count <- 0
+for (val in x) {
+if(val %% 2 == 0)  count = count+1
+}
+print(count)
+```
+## function
+```{r}
+sqtest<-function(x,y){
+  z1=x^2
+  z2=y^2
+  z=sqrt(z1+z1)
+  return(c(z1,z2,z))
+}
+sqtest(2,3)
+```
+

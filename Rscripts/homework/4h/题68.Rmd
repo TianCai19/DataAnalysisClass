@@ -1,0 +1,19 @@
+---
+title: '68'
+author: "数181王征"
+date: "2020/11/6"
+output: html_document
+---
+
+```{r}
+patients<-read.csv("表68.csv")
+attach(patients)
+glm.sol<-glm(Y~X1+X2+X3+X4+X5,family = binomial,data = patients)                                                      
+summary(glm.sol)
+pre1<-predict(glm.sol,data=patients)
+p1<-exp(pre1)/(1+exp(pre1));p1
+glm.new<-step(glm.sol)
+summary(glm.new)
+pre2<-predict(glm.new,data=patients)
+p2<-exp(pre2)/(1+exp(pre2));p2
+```

@@ -1,0 +1,76 @@
+---
+title: '6'
+author: "朱广恩"
+date: "2020/11/13"
+output: html_document
+---
+# 问题一
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+data1<-read.csv2("data/data2.csv")
+R<-data.frame(data1[2:17])
+rownames(R)<-data1[1:16,1]
+labels=c("身高(X1)","坐高(X2)","胸围(X3)","头高(X4)"," 裤长(X5)","下档(X6)"," 手长(X7)","领围(X8)","前胸(X9)","后背(X10)","肩厚(X11)",
+"肩宽(X12)","袖长(X13)","肋围(X14)","腰围(X15) ","腿肚(X16)");
+```
+
+```{r}
+pr<-princomp(R)
+load=loadings(pr)
+plot(load[,1:2]);
+
+text(load[,1],load[,2],adj = c(0.4,0.3),labels=labels)
+```
+
+###  结论：
+* 左边可以看成一类:"围类"，包括胸围，领围，腰围等
+* 中间可以看成一类：“提醒特征指标”，包括胸，后背等
+* 右边可以看成一类：“长类”，包括身高，坐高等
+
+
+# 问题二
+```{r include=FALSE}
+conomy <- data.frame(read.csv("data/data3.csv"))
+```
+
+
+```{r}
+lm.sol<-lm(Y~X1+X2+X3,data = conomy)
+summary(lm.sol)
+```
+> X1的系数为负，表示国内生产总值和进口量成反比。显然不合理。原因是三个变量存在多重共线性。
+
+
+
+### 主成分分析
+```{r pca}
+conomy.pr<-princomp(~X1+X2+X3,data = conomy)
+summary(conomy.pr,loadings=TRUE)
+```
+> 可以看到前两个变量的贡献率已经到达99%，最小特征值几乎为0（存在多重共线性）
+
+
+### 做主成成分回归
+```{r}
+pre<-predict(conomy.pr)## 主成分的预测值
+conomy$z1<-pre[,1];conomy$z2<-pre[,2]
+lm.sol<-lm(Y~z1+z2,data = conomy);
+summary(lm.sol)
+
+```
+> 回归系数和方程均通过检验，且效果显著
+
+### 坐标变换，得到原坐标下的关系表达式
+```{r}
+beta<-coef(lm.sol);
+A<-loadings(conomy.pr);
+x.bar<-conomy.pr$center;
+x.sd<-conomy.pr$scale;
+coef<-(beta[2]*A[,1]+beta[3]*A[,2])/x.sd;
+beta0<-beta[1]-sum(x.bar*coef)
+c(beta0,coef)
+```
+> 得到方程$y=-9.5991+0.0186X_1+0.61545X_2+0.18489X_3$

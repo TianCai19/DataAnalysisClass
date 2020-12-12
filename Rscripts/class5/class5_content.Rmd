@@ -1,0 +1,47 @@
+
+
+## 异常值(噪声)对特征值的影响
+特征值变得不能更好的反相应总体的特征
+```{r}
+n <- 1000;
+mean <- 1;
+x <- rnorm(n,mean,1)
+mean(x)
+quantile(x)
+boxplot(x)
+title <-"cool"
+x[1:10] <-30*mean
+mean(x)
+boxplot(x)
+quantile(x)
+
+```
+## 第一种降低噪声的方法：使用更好的特征值
+```{r}
+median(x)
+mean(x)
+```
+
+
+## 第二种降噪的方法：删除异常值
+```{r}
+x <-x[-c(1:10)];
+mean(x)
+
+```
+
+
+##求次序统计量
+```{r}
+```
+
+## 分位数
+```{r}
+
+quantile(x)
+```
+## 分布
+```{r}
+hist(x,freq = F,col = "red",breaks = 3)
+```
+
